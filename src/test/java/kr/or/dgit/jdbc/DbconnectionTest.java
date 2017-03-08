@@ -13,7 +13,7 @@ public class DbconnectionTest {
 	private static Connection connection;
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		connection = ConnectionFactory.getInstance();
+		connection = ConnectionFactory.getConnection();
 	}
 
 	@AfterClass

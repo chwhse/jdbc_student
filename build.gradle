@@ -2,6 +2,11 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'application'
 
+sourceCompatibility = 1.8	// 컴파일 할 때 적용할 jdk버전을 지정
+
+tasks.withType(JavaCompile){
+	options.encoding = 'UTF-8'
+}
 
 repositories {
     jcenter()
@@ -20,12 +25,12 @@ dependencies {
     testImplementation 'junit:junit:4.12'
 }
 
-version - 1.0
+version = 1.0
 mainClassName = 'kr.or.dgit.gradle_project.StudentUI'
 
 jar {
-	baseName - 'GradleTest'
-	appendix - 'bin'
+	baseName = 'GradleTest'
+	appendix = 'bin'
 	manifest{
 		attributes 'Title' : baseName, 'Version' : version, 'Main-Class' : mainClassName
 	}
@@ -45,4 +50,4 @@ uploadArchives{
 		}
 	}
 
-
+}

@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.Collections;
 import java.util.List;
 
 import javax.management.RuntimeErrorException;
@@ -57,13 +58,13 @@ public class StudentService implements StudentDao {
 	}
 
 	@Override
-	public void insertStudent(Student student) {
+	public int insertStudent(Student student) {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		
 		con = ConnectionFactory.getConnection();
 		String sql = "insert into student values(?,?,?,?)";
-		
+		int res = -1;
 		
 		try {
 			pstmt = con.prepareStatement(sql);
@@ -71,7 +72,7 @@ public class StudentService implements StudentDao {
 			pstmt.setString(2, student.getName());
 			pstmt.setString(3, student.getEmail());
 			pstmt.setTimestamp(4, new Timestamp(student.getDob().getTime()));
-			pstmt.executeUpdate();
+			res = pstmt.executeUpdate();
 			System.out.println(pstmt);
 		} catch (MySQLIntegrityConstraintViolationException e) {
 			System.err.printf("중복학생존재", student);
@@ -81,6 +82,7 @@ public class StudentService implements StudentDao {
 			JdbcUtil.close(pstmt);
 			JdbcUtil.close(con);
 		}
+		return res;
 	}
 
 	@Override
@@ -118,11 +120,13 @@ public class StudentService implements StudentDao {
 		
 		try {
 			pstmt = con.prepareStatement(sql);
-			pstmt.setInt(1, studId);
 			rs = pstmt.executeQuery();
-			if(rs.next()){
-				student = getStudent(rs);
+			if(!rs.next()){
+				return Collections.emptyList();
 			}
+			do{
+				lists.add(getStudent(rs));
+			}while (rs.next());
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		} finally {
@@ -130,7 +134,7 @@ public class StudentService implements StudentDao {
 			JdbcUtil.close(pstmt);
 			JdbcUtil.close(con);
 		}
-		return student;
+		return lists;
 	}
 
 }
