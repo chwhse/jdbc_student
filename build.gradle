@@ -7,6 +7,11 @@ repositories {
     jcenter()
 }
 
+tasks.withType(JavaCompile){
+	options.encoding = 'UTF-8'
+}
+
+
 dependencies {
 	// https://mvnrepository.com/artifact/mysql/mysql-connector-java
 	compile group: 'mysql', name: 'mysql-connector-java', version: '5.+'
@@ -14,4 +19,30 @@ dependencies {
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'
 }
+
+version - 1.0
+mainClassName = 'kr.or.dgit.gradle_project.StudentUI'
+
+jar {
+	baseName - 'GradleTest'
+	appendix - 'bin'
+	manifest{
+		attributes 'Title' : baseName, 'Version' : version, 'Main-Class' : mainClassName
+	}
+	//	archiveName 'StudentManagement.jar'	// baseName, appendix 속성이 무시됨
+	dependsOn configurations.runtime // 실행 가능한 jar파일 생성
+	
+}
+
+task myJavadocs(type: Javadoc){
+	source = sourceSets.main.allJava
+}
+
+uploadArchives{
+	repositories {
+		flatDir {
+			dirs 'repos'
+		}
+	}
+
 
